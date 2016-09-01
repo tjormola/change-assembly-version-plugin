@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.changeassemblyversion;
 
 import hudson.FilePath;
 import hudson.model.BuildListener;
+import java.io.OutputStream;
 import java.io.IOException;
 import java.util.regex.Pattern;
 import org.apache.commons.io.input.BOMInputStream;
@@ -26,7 +27,12 @@ public class ChangeTools {
             }
             
             //listener.getLogger().println(String.format("Updating file : %s", file.getRemote()));
-            file.write(newContent, null);
+            OutputStream os = file.write();
+            try {
+                os.write(content.getBytes());
+            } finally {
+                os.close();
+            }
         }
         else
         {
